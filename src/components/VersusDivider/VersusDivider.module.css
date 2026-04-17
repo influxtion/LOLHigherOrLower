@@ -5,6 +5,9 @@
   justify-content: center;
   gap: var(--space-3);
   min-width: 56px;
+  /* Fill the remaining height of the middle column below the score box. */
+  flex: 1;
+  align-self: stretch;
   color: var(--color-gold);
   user-select: none;
 }

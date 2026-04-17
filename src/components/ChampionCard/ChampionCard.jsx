@@ -6,6 +6,7 @@ import styles from './ChampionCard.module.css';
 /**
  * Visual states:
  *   hidden     — stat not yet revealed, shows "?"
+ *   neutral    — revealed with no outcome yet (the anchor during guessing)
  *   correct    — revealed, player was right about this card (or other card)
  *   incorrect  — revealed, player was wrong
  *
@@ -30,11 +31,13 @@ export default function ChampionCard({
     return <div className={`${styles.card} ${styles.empty}`} aria-hidden />;
   }
 
-  const stateClass = revealed
-    ? outcome === 'correct'
+  const stateClass = !revealed
+    ? styles.hidden
+    : outcome === 'correct'
       ? styles.correct
-      : styles.incorrect
-    : styles.hidden;
+      : outcome === 'incorrect'
+        ? styles.incorrect
+        : '';
 
   return (
     <button
@@ -53,12 +56,9 @@ export default function ChampionCard({
         draggable="false"
         referrerPolicy="no-referrer"
         onError={(event) => {
-          // Data Dragon sometimes lags behind for a brand-new champion's
-          // loading art — fall back to splash art which has wider coverage.
-          const fallback = `${DDRAGON.loadingArtUrl(champion.id).replace(
-            '/loading/',
-            '/splash/',
-          )}`;
+          // Community Dragon occasionally 404s for a freshly-added champion.
+          // Fall back to Data Dragon loading art — lower res but reliable.
+          const fallback = DDRAGON.loadingArtUrl(champion.id);
           if (event.currentTarget.src !== fallback) {
             event.currentTarget.src = fallback;
           }

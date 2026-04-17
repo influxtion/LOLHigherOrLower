@@ -77,5 +77,7 @@
   --sidebar-width: 220px;
   --sidebar-width-rail: 64px;
   --card-max-width: 460px;
-  --card-aspect: 3 / 4;
+  /* 9/16 matches Data Dragon loading-art aspect (308×560) closely, so
+     object-fit: cover no longer has to zoom the image to fill the card. */
+  --card-aspect: 9 / 16;
 }

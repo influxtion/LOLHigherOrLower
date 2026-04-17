@@ -21,6 +21,13 @@ export default function GameScreen({ mode, onChangeMode }) {
   const isGameOver = game.phase === PHASE.gameOver;
   const canClick = game.phase === PHASE.guessing;
 
+  // After the conveyor belt has moved at least once (score > 0), the left
+  // card is a known anchor and its stat stays visible. On the very first
+  // round both cards are hidden until the player commits.
+  const conveyorActive = game.score > 0;
+  const leftRevealed = conveyorActive || isRevealing || isGameOver;
+  const rightRevealed = isRevealing || isGameOver;
+
   const leftOutcome = outcomeFor('left', game.pair, game.playerPick);
   const rightOutcome = outcomeFor('right', game.pair, game.playerPick);
 
@@ -44,30 +51,29 @@ export default function GameScreen({ mode, onChangeMode }) {
         </div>
       ) : (
         <>
-          <div className={styles.scoreRow}>
-            <ScoreDisplay
-              score={game.score}
-              highScore={game.highScore}
-              modeLabel={modeDef.statLabel}
-            />
-          </div>
-
           <div className={styles.arena}>
             <ChampionCard
               champion={game.pair.left}
               mode={mode}
               statLabel={modeDef.statLabel}
-              revealed={isRevealing || isGameOver}
+              revealed={leftRevealed}
               outcome={leftOutcome}
               disabled={!canClick}
               onClick={() => game.onPick('left')}
             />
-            <VersusDivider />
+            <div className={styles.middle}>
+              <ScoreDisplay
+                score={game.score}
+                highScore={game.highScore}
+                modeLabel={modeDef.statLabel}
+              />
+              <VersusDivider />
+            </div>
             <ChampionCard
               champion={game.pair.right}
               mode={mode}
               statLabel={modeDef.statLabel}
-              revealed={isRevealing || isGameOver}
+              revealed={rightRevealed}
               outcome={rightOutcome}
               disabled={!canClick}
               onClick={() => game.onPick('right')}

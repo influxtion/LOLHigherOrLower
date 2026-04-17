@@ -1,6 +1,6 @@
 # LoL Higher or Lower
 
-A small React + Vite web game. The player is shown two League of Legends champion cards side-by-side and must pick which one has the higher stat. Classic Higher-or-Lower flow: the winning champion stays on screen while a new challenger replaces the loser — with one twist noted below.
+A small React + Vite web game. The player is shown two League of Legends champion cards side-by-side — a revealed **anchor** on the left and a hidden **challenger** on the right — and must pick which has the higher stat. On a correct guess the challenger's stat is revealed and it slides into the anchor slot for the next round (see "conveyor belt" below).
 
 ## Project purpose
 
@@ -20,11 +20,11 @@ Which champion has the higher **win rate in Emerald+ ranked games**? The game at
 
 **Honesty note:** the static dataset values are plausible and internally consistent, but they are not scraped live. They exist so that Mode 2 always works, not as a source of truth for real ladder stats.
 
-## The "winner always replaced" invariant
+## The "conveyor belt" round transition
 
-Standard Higher or Lower keeps the winning card on screen indefinitely. That means one dominant champion (e.g. the tankiest champion in the roster for Mode 1) can carry an arbitrarily long streak, turning the game into a memory test. To avoid this, **both cards are replaced at the start of each new round, even the winner.** The winner's identity is recorded and excluded from the next pair so the game is always moving.
+Classic Higher or Lower flow. The left card is the **anchor** — its stat is always visible. The right card is the **challenger** — its stat stays hidden until the player picks. On a correct guess the challenger's stat is revealed, then the challenger slides into the anchor slot (keeping its now-known value) and a fresh random champion becomes the new challenger on the right. Output of one turn is the input of the next — the chain is continuous.
 
-This is the single non-obvious gameplay invariant. It is implemented in `src/hooks/useGameState.js` and commented at the swap site.
+Implemented in `src/hooks/useGameState.js::advanceRound` (the swap site) and `src/components/GameScreen/GameScreen.jsx` (which decides per-side reveal state).
 
 ## File / component structure
 
@@ -42,7 +42,7 @@ src/
 │   ├── GameScreen/                   Orchestrates rounds: renders cards, divider, score, and game-over overlay
 │   └── GameOver/                     Game-over overlay: final score, high score, play-again / change-mode actions
 ├── hooks/
-│   ├── useGameState.js               Round state machine, score, high-score persistence, winner-replaces rule
+│   ├── useGameState.js               Round state machine, score, high-score persistence, conveyor-belt swap
 │   ├── useChampionData.js            Fetches + caches the champion list per mode
 │   └── useLocalStorage.js            Small generic hook for persisted state
 ├── data/
@@ -65,7 +65,7 @@ src/
 
 - `GET https://ddragon.leagueoflegends.com/api/versions.json` — array of patch versions; `versions[0]` is the latest.
 - `GET https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json` — batch endpoint that already contains `stats.hp` for every champion. **This is preferred over the per-champion endpoint** (`.../champion/{id}.json`) because one request covers the full roster (~170 champions) instead of one-per-champion. The per-champion endpoint is reserved as a fallback if the batch endpoint ever drops the hp field.
-- Loading-screen art: `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{id}_0.jpg`. Portrait-oriented, card-friendly.
+- Card art: `https://cdn.communitydragon.org/latest/champion/{id}/splash-art/centered` (Community Dragon). 1280×720 landscape with the champion pre-centered — scales cleanly into the portrait card aspect without the aggressive upscaling you'd get from Data Dragon's 308×560 loading tile. On the rare 404 (brand-new champion before Community Dragon mirrors them), the card falls back to `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{id}_0.jpg`.
 
 ### Win rates — static dataset (Mode 2)
 

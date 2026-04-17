@@ -7,8 +7,9 @@
  * static dataset in src/data/winRates.json. There is no live win-rate fetch.
  */
 
-import { DDRAGON, MODES } from './constants.js';
+import { CDRAGON, DDRAGON, MINIGAMES, MODES } from './constants.js';
 import { getWinRate } from '../data/winRates.js';
+import { getReleaseDate } from '../data/releaseDates.js';
 
 /**
  * GETs the latest Data Dragon patch version. versions[0] is always newest.
@@ -35,7 +36,7 @@ export async function fetchChampionsHP(version) {
       id: champion.id,
       name: champion.name,
       stat: champion.stats?.hp,
-      imageUrl: DDRAGON.loadingArtUrl(champion.id),
+      imageUrl: CDRAGON.centeredSplashUrl(champion.id),
     }))
     .filter((c) => Number.isFinite(c.stat));
 }
@@ -53,7 +54,54 @@ export async function fetchChampionsWinRate(version) {
     id: champion.id,
     name: champion.name,
     stat: getWinRate(champion.id),
-    imageUrl: DDRAGON.loadingArtUrl(champion.id),
+    imageUrl: CDRAGON.centeredSplashUrl(champion.id),
+  }));
+}
+
+/**
+ * Builds the Difficulty-mode champion list from Riot's own 1–10 rating, which
+ * ships inside `info.difficulty` on the batch champion.json payload.
+ */
+export async function fetchChampionsDifficulty(version) {
+  const payload = await fetchChampionPayload(version);
+  return Object.values(payload?.data ?? {})
+    .map((champion) => ({
+      id: champion.id,
+      name: champion.name,
+      stat: champion.info?.difficulty,
+      imageUrl: CDRAGON.centeredSplashUrl(champion.id),
+    }))
+    .filter((c) => Number.isFinite(c.stat));
+}
+
+/**
+ * Builds the Release-Date mode champion list. Data Dragon does not ship
+ * release dates, so we join the live roster with a hand-curated static
+ * dataset (src/data/releaseDates.json). Champions missing from the dataset
+ * are filtered out rather than given a fake date — keeps the game honest,
+ * and a freshly-added champion just sits out until the JSON is updated.
+ */
+export async function fetchChampionsRelease(version) {
+  const payload = await fetchChampionPayload(version);
+  return Object.values(payload?.data ?? {})
+    .map((champion) => ({
+      id: champion.id,
+      name: champion.name,
+      stat: getReleaseDate(champion.id),
+      imageUrl: CDRAGON.centeredSplashUrl(champion.id),
+    }))
+    .filter((c) => Number.isFinite(c.stat));
+}
+
+/**
+ * Pixel Reveal minigame champion list. No stat — just identity + splash URL.
+ */
+export async function fetchChampionsForPixelReveal(version) {
+  const payload = await fetchChampionPayload(version);
+  return Object.values(payload?.data ?? {}).map((champion) => ({
+    id: champion.id,
+    name: champion.name,
+    imageUrl: CDRAGON.centeredSplashUrl(champion.id),
   }));
 }
 
@@ -70,5 +118,8 @@ async function fetchChampionPayload(version) {
 export async function fetchChampionsForMode(mode) {
   const version = await fetchLatestVersion();
   if (mode === MODES.WIN_RATE) return fetchChampionsWinRate(version);
+  if (mode === MODES.DIFFICULTY) return fetchChampionsDifficulty(version);
+  if (mode === MODES.RELEASE) return fetchChampionsRelease(version);
+  if (mode === MINIGAMES.PIXEL_REVEAL) return fetchChampionsForPixelReveal(version);
   return fetchChampionsHP(version);
 }

@@ -10,13 +10,6 @@
   min-height: 100vh;
 }
 
-.scoreRow {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 960px;
-}
-
 .arena {
   display: flex;
   align-items: stretch;
@@ -26,6 +19,17 @@
   max-width: 1100px;
   flex: 1;
   min-height: 0;
+}
+
+/* Middle column: score pinned to the top, VS divider fills the rest. */
+.middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 160px;
+  max-width: 200px;
+  padding-top: var(--space-2);
 }
 
 .arena > :global(.sr-only) {
@@ -114,5 +118,14 @@
     flex-direction: column;
     align-items: center;
     gap: var(--space-3);
+  }
+  /* On mobile the arena stacks vertically; let the middle column become
+     a horizontal strip again (score on its own row, divider after). */
+  .middle {
+    flex-direction: column;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    padding-top: 0;
   }
 }

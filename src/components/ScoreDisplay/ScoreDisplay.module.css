@@ -13,8 +13,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  padding: var(--space-4) var(--space-6);
-  min-width: 240px;
+  padding: var(--space-3) var(--space-4);
+  width: 100%;
   background: var(--color-bg-raised);
   border: 1px solid var(--color-border-hot);
   border-radius: var(--radius-md);
@@ -34,7 +34,7 @@
 .streakValue {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--fs-xxl);
+  font-size: var(--fs-xl);
   line-height: 1;
   color: var(--color-gold-soft);
 }
@@ -46,6 +46,7 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-loose);
   color: var(--color-text-faint);
+  text-align: center;
 }
 
 .highScoreLine {

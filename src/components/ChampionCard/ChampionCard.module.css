@@ -3,6 +3,8 @@
   display: block;
   width: 100%;
   max-width: var(--card-max-width);
+  /* Safety for short viewports: cap height, width auto-reduces via aspect-ratio. */
+  max-height: calc(100vh - var(--space-8));
   aspect-ratio: var(--card-aspect);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -51,7 +53,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 22%;
+  /* Community Dragon centered splash is 1280×720 landscape with the champion
+     pre-centered. At our 9:16 card aspect it scales to fit height (~1.14×)
+     and crops horizontally to the central strip — character sits naturally. */
+  object-position: center;
   opacity: 0;
   transform: scale(1.02);
   transition:
