@@ -1,0 +1,185 @@
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: var(--card-max-width);
+  aspect-ratio: var(--card-aspect);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-med) var(--ease-out);
+  /* Inner 1px highlight + subtle ambient shadow. No stock drop-shadow blob. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 20px 40px -30px rgba(0, 0, 0, 0.8);
+}
+
+.card.empty {
+  cursor: default;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.card:not(:disabled):hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-hot);
+}
+
+.card:not(:disabled):hover .art {
+  transform: scale(1.04);
+}
+
+.card:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.card:disabled {
+  cursor: default;
+}
+
+/* Loading-art portrait. Positioned so the champion's face tends toward the
+   upper third of the card, leaving room for the stat readout at the bottom. */
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  opacity: 0;
+  transform: scale(1.02);
+  transition:
+    opacity var(--motion-med) var(--ease-out),
+    transform var(--motion-med) var(--ease-out);
+}
+
+.artReady {
+  opacity: 1;
+}
+
+/* A focused gradient overlay at the bottom half only — the top of the art
+   stays clean. This is the ONE gradient we allow; it exists for text
+   legibility, not decoration. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(7, 9, 15, 0) 35%,
+    rgba(7, 9, 15, 0.55) 65%,
+    rgba(7, 9, 15, 0.95) 100%
+  );
+  pointer-events: none;
+}
+
+.content {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: var(--color-text);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-xl);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+  color: var(--color-text);
+}
+
+.statRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px solid rgba(200, 162, 90, 0.18);
+}
+
+.statLabel {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-loose);
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-xxl);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--color-gold-soft);
+  min-height: calc(var(--fs-xxl) * 1);
+}
+
+/* Reveal states — driven by the parent. The stat fades/slides in, the whole
+   card picks up a colored rim + inner halo. No rainbow bursts. */
+.hidden .statValue {
+  animation: none;
+}
+
+.correct {
+  border-color: var(--color-success);
+  box-shadow:
+    inset 0 0 0 1px rgba(78, 168, 122, 0.35),
+    inset 0 0 60px -10px var(--color-success-glow),
+    0 20px 40px -30px rgba(0, 0, 0, 0.8);
+}
+
+.correct .statValue {
+  color: #b6e4c8;
+  animation: stat-rise var(--motion-reveal) var(--ease-out) both;
+}
+
+.incorrect {
+  border-color: var(--color-danger);
+  box-shadow:
+    inset 0 0 0 1px rgba(196, 81, 74, 0.35),
+    inset 0 0 60px -10px var(--color-danger-glow),
+    0 20px 40px -30px rgba(0, 0, 0, 0.8);
+}
+
+.incorrect .statValue {
+  color: #f0b4b0;
+  animation: stat-rise var(--motion-reveal) var(--ease-out) both;
+}
+
+@keyframes stat-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .name {
+    font-size: var(--fs-lg);
+  }
+  .statValue {
+    font-size: var(--fs-xl);
+  }
+  .content {
+    padding: var(--space-4) var(--space-4) var(--space-5);
+  }
+}

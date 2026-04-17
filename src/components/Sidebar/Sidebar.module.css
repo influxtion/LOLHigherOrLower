@@ -1,0 +1,220 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  padding: var(--space-5) var(--space-4);
+  background: var(--color-bg-panel);
+  border-right: 1px solid var(--color-border);
+  gap: var(--space-6);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: background var(--motion-fast) var(--ease-out);
+}
+
+.brand:hover {
+  background: var(--color-bg-raised);
+}
+
+.brandMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-deep);
+  border: 1px solid var(--color-gold-deep);
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-lg);
+  flex-shrink: 0;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1;
+}
+
+.brandLine1,
+.brandLine2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+}
+
+.brandLine1 {
+  font-size: var(--fs-md);
+  color: var(--color-text);
+}
+
+.brandLine2 {
+  font-size: var(--fs-xs);
+  color: var(--color-gold);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.navHeading {
+  padding: 0 var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-loose);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.modeList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.modeButton {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  text-align: left;
+  color: var(--color-text-dim);
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+
+.modeButton:hover {
+  background: var(--color-bg-raised);
+  color: var(--color-text);
+}
+
+.modeButtonActive {
+  background: var(--color-bg-raised);
+  color: var(--color-text);
+}
+
+.modeButtonActive .modeBullet {
+  background: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(200, 162, 90, 0.18);
+}
+
+.modeBullet {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--color-border-hot);
+  transition: background var(--motion-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.modeLabelBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.modeLabel {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: inherit;
+}
+
+.modeDescription {
+  font-size: var(--fs-xs);
+  color: var(--color-text-faint);
+  line-height: 1.4;
+}
+
+.foot {
+  padding: var(--space-2);
+}
+
+.footText {
+  font-size: var(--fs-xs);
+  color: var(--color-text-faint);
+  letter-spacing: var(--tracking-loose);
+  text-transform: uppercase;
+}
+
+/* Tablet — collapse to an icon rail. */
+@media (max-width: 959px) and (min-width: 600px) {
+  .sidebar {
+    width: var(--sidebar-width-rail);
+    padding: var(--space-4) var(--space-2);
+    align-items: center;
+    gap: var(--space-5);
+  }
+  .brandText,
+  .modeDescription,
+  .modeLabel,
+  .navHeading,
+  .foot {
+    display: none;
+  }
+  .modeButton {
+    justify-content: center;
+    padding: var(--space-2);
+  }
+  .modeBullet {
+    width: 12px;
+    height: 12px;
+    margin: 0;
+  }
+}
+
+/* Mobile — sidebar becomes a top bar with mode chips. */
+@media (max-width: 599px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: var(--space-3);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+    gap: var(--space-3);
+  }
+  .nav {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2);
+  }
+  .navHeading,
+  .foot {
+    display: none;
+  }
+  .modeList {
+    flex-direction: row;
+    gap: var(--space-2);
+  }
+  .modeButton {
+    padding: var(--space-2) var(--space-3);
+  }
+  .modeDescription {
+    display: none;
+  }
+  .brandText {
+    display: none;
+  }
+}

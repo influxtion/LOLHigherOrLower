@@ -1,0 +1,39 @@
+@import './tokens.css';
+@import './reset.css';
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  color: var(--color-text);
+  background: var(--color-bg-deep);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+#root {
+  min-height: 100%;
+  display: flex;
+}
+
+/* The background is a near-black field with a very subtle vertical fade so
+   the panels above it read as "lit from above" without an overt gradient. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 50% -10%, #121a2a 0%, transparent 60%),
+    var(--color-bg-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

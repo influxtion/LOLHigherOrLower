@@ -1,0 +1,82 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.streakBox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-6);
+  min-width: 240px;
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border-hot);
+  border-radius: var(--radius-md);
+  /* A hairline gold top accent — the one moment in the UI where gold is a
+     fill instead of just a border. Keeps the hierarchy reading immediately. */
+  box-shadow: inset 0 1px 0 rgba(200, 162, 90, 0.35);
+}
+
+.streakLabel {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-loose);
+  color: var(--color-text-dim);
+}
+
+.streakValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-xxl);
+  line-height: 1;
+  color: var(--color-gold-soft);
+}
+
+.mode {
+  margin-top: var(--space-1);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-loose);
+  color: var(--color-text-faint);
+}
+
+.highScoreLine {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--color-text-dim);
+}
+
+.highScoreLabel {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-loose);
+  font-weight: 500;
+  font-size: var(--fs-xs);
+}
+
+.highScoreValue {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  color: var(--color-text);
+}
+
+@media (max-width: 600px) {
+  .streakBox {
+    min-width: 0;
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+  }
+  .streakValue {
+    font-size: var(--fs-xl);
+  }
+}
