@@ -1,4 +1,5 @@
 .screen {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -6,6 +7,25 @@
   gap: var(--space-8);
   padding: var(--space-7) var(--space-6);
   overflow-y: auto;
+  isolation: isolate;
+}
+
+.foreground {
+  position: relative;
+  z-index: 1;
+}
+
+/* Text shadows keep hero + group headings readable when orbit tiles pass
+   behind them. Mode cards have their own opaque panel and don't need this. */
+.eyebrow,
+.title,
+.subtitle,
+.groupLabel,
+.groupTagline {
+  text-shadow:
+    0 0 14px rgba(7, 9, 15, 0.95),
+    0 0 28px rgba(7, 9, 15, 0.75),
+    0 2px 6px rgba(7, 9, 15, 0.8);
 }
 
 .hero {
@@ -50,7 +70,7 @@
   margin: 0;
   font-size: var(--fs-md);
   line-height: 1.6;
-  color: var(--color-text-dim);
+  color: var(--color-text);
 }
 
 .groups {
@@ -87,7 +107,7 @@
 .groupTagline {
   margin: 0;
   font-size: var(--fs-sm);
-  color: var(--color-text-dim);
+  color: var(--color-text);
 }
 
 .modeGrid {

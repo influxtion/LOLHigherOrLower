@@ -1,0 +1,42 @@
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  filter: saturate(0.75) contrast(1.05);
+  transition: opacity 900ms var(--ease-out), transform 200ms var(--ease-out);
+  will-change: opacity, transform;
+}
+
+.canvasReady {
+  opacity: 1;
+}
+
+/* Center vignette — keeps the wordmark readable.
+   Outer vignette — frames the scene, fades orbit edges into the page. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 28% 22% at 50% 36%,
+      rgba(7, 9, 15, 0.85) 0%,
+      rgba(7, 9, 15, 0.45) 40%,
+      rgba(7, 9, 15, 0) 75%
+    ),
+    radial-gradient(
+      ellipse 95% 85% at 50% 50%,
+      rgba(7, 9, 15, 0) 60%,
+      var(--color-bg-deep) 100%
+    );
+}

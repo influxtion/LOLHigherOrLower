@@ -1,64 +1,51 @@
+/* Full-bleed half: no rounded frame, no max width, no aspect cap. The card
+   fills its flex column in the arena and the splash art cover-fits that box. */
 .card {
   position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   display: block;
-  width: 100%;
-  max-width: var(--card-max-width);
-  /* Safety for short viewports: cap height, width auto-reduces via aspect-ratio. */
-  max-height: calc(100vh - var(--space-8));
-  aspect-ratio: var(--card-aspect);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+  padding: 0;
   background: var(--color-bg-panel);
-  border: 1px solid var(--color-border);
+  border: none;
+  border-radius: 0;
   cursor: pointer;
+  overflow: hidden;
   transition:
-    transform var(--motion-fast) var(--ease-out),
-    border-color var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-med) var(--ease-out);
-  /* Inner 1px highlight + subtle ambient shadow. No stock drop-shadow blob. */
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 20px 40px -30px rgba(0, 0, 0, 0.8);
+    box-shadow var(--motion-med) var(--ease-out),
+    filter var(--motion-fast) var(--ease-out);
 }
 
 .card.empty {
   cursor: default;
   background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-
-.card:not(:disabled):hover {
-  transform: translateY(-2px);
-  border-color: var(--color-border-hot);
 }
 
 .card:not(:disabled):hover .art {
   transform: scale(1.04);
 }
 
-.card:not(:disabled):active {
-  transform: translateY(0);
+.card:not(:disabled):hover {
+  filter: brightness(1.06);
 }
 
 .card:disabled {
   cursor: default;
 }
 
-/* Loading-art portrait. Positioned so the champion's face tends toward the
-   upper third of the card, leaving room for the stat readout at the bottom. */
+/* The splash art fills the entire half, cover-fit, zoomed in on the champion.
+   CDragon centered splash is 1280×720 landscape with the character at ~center-
+   top, so biasing object-position upward keeps the face in frame on tall halves
+   and the extra scale tightens the framing. */
 .art {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Community Dragon centered splash is 1280×720 landscape with the champion
-     pre-centered. At our 9:16 card aspect it scales to fit height (~1.14×)
-     and crops horizontally to the central strip — character sits naturally. */
-  object-position: center;
+  object-position: center 35%;
   opacity: 0;
-  transform: scale(1.02);
+  transform: scale(1);
   transition:
     opacity var(--motion-med) var(--ease-out),
     transform var(--motion-med) var(--ease-out);
@@ -68,60 +55,112 @@
   opacity: 1;
 }
 
-/* A focused gradient overlay at the bottom half only — the top of the art
-   stays clean. This is the ONE gradient we allow; it exists for text
-   legibility, not decoration. */
+/* Full-card vignette — subtle darkening at the bottom and the inner (seam)
+   edge so the name + stat and the VS divider both have contrast against the
+   art. The outer edge stays clean so the image reads large. */
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(7, 9, 15, 0) 35%,
-    rgba(7, 9, 15, 0.55) 65%,
-    rgba(7, 9, 15, 0.95) 100%
-  );
   pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(7, 9, 15, 0) 45%,
+      rgba(7, 9, 15, 0.6) 75%,
+      rgba(7, 9, 15, 0.92) 100%
+    );
+}
+
+.left .overlay {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(7, 9, 15, 0) 45%,
+      rgba(7, 9, 15, 0.6) 75%,
+      rgba(7, 9, 15, 0.92) 100%
+    ),
+    linear-gradient(
+      to right,
+      rgba(7, 9, 15, 0) 70%,
+      rgba(7, 9, 15, 0.5) 100%
+    );
+}
+
+.right .overlay {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(7, 9, 15, 0) 45%,
+      rgba(7, 9, 15, 0.6) 75%,
+      rgba(7, 9, 15, 0.92) 100%
+    ),
+    linear-gradient(
+      to left,
+      rgba(7, 9, 15, 0) 70%,
+      rgba(7, 9, 15, 0.5) 100%
+    );
 }
 
 .content {
   position: absolute;
   inset: auto 0 0 0;
-  padding: var(--space-5) var(--space-5) var(--space-6);
+  padding: var(--space-6) var(--space-6) var(--space-7);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   color: var(--color-text);
+  /* keep the readout clear of the streak box floating near the top */
+}
+
+.left .content {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.right .content {
+  align-items: flex-end;
+  text-align: right;
 }
 
 .nameRow {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
 }
 
 .name {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: var(--fs-xl);
+  font-size: var(--fs-xxl);
   letter-spacing: var(--tracking-display);
-  line-height: 1.05;
+  line-height: 1.02;
   color: var(--color-text);
+  text-shadow:
+    0 0 18px rgba(7, 9, 15, 0.9),
+    0 2px 8px rgba(7, 9, 15, 0.85);
 }
 
 .statRow {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  padding-top: var(--space-2);
-  border-top: 1px solid rgba(200, 162, 90, 0.18);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(200, 162, 90, 0.22);
+  min-width: 220px;
+}
+
+.right .statRow {
+  align-items: flex-end;
 }
 
 .statLabel {
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   font-weight: 600;
   letter-spacing: var(--tracking-loose);
   text-transform: uppercase;
-  color: var(--color-text-dim);
+  color: var(--color-text);
+  text-shadow:
+    0 0 12px rgba(7, 9, 15, 0.9),
+    0 2px 6px rgba(7, 9, 15, 0.85);
 }
 
 .statValue {
@@ -132,20 +171,17 @@
   line-height: 1;
   color: var(--color-gold-soft);
   min-height: calc(var(--fs-xxl) * 1);
+  text-shadow: 0 2px 8px rgba(7, 9, 15, 0.8);
 }
 
-/* Reveal states — driven by the parent. The stat fades/slides in, the whole
-   card picks up a colored rim + inner halo. No rainbow bursts. */
 .hidden .statValue {
   animation: none;
 }
 
+/* Reveal states — no border (there IS no card), only a saturated inner glow
+   from the seam edge inward, plus a color wash on the stat. */
 .correct {
-  border-color: var(--color-success);
-  box-shadow:
-    inset 0 0 0 1px rgba(78, 168, 122, 0.35),
-    inset 0 0 60px -10px var(--color-success-glow),
-    0 20px 40px -30px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 0 90px -10px var(--color-success-glow);
 }
 
 .correct .statValue {
@@ -154,11 +190,7 @@
 }
 
 .incorrect {
-  border-color: var(--color-danger);
-  box-shadow:
-    inset 0 0 0 1px rgba(196, 81, 74, 0.35),
-    inset 0 0 60px -10px var(--color-danger-glow),
-    0 20px 40px -30px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 0 90px -10px var(--color-danger-glow);
 }
 
 .incorrect .statValue {
@@ -177,12 +209,47 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 959px) {
   .name {
-    font-size: var(--fs-lg);
+    font-size: var(--fs-xl);
   }
   .statValue {
     font-size: var(--fs-xl);
+  }
+  .content {
+    padding: var(--space-5) var(--space-5) var(--space-6);
+  }
+}
+
+@media (max-width: 599px) {
+  /* Stacked halves are wide landscape — cover already frames the character
+     fairly tight; dial the zoom back so heads don't crop. */
+  .art {
+    transform: scale(1);
+    object-position: center 30%;
+  }
+  .card:not(:disabled):hover .art {
+    transform: scale(1.04);
+  }
+  .left .overlay,
+  .right .overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(7, 9, 15, 0) 40%,
+      rgba(7, 9, 15, 0.65) 75%,
+      rgba(7, 9, 15, 0.95) 100%
+    );
+  }
+  .left .content,
+  .right .content {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .right .statRow {
+    align-items: flex-start;
+  }
+  .statRow {
+    min-width: 0;
   }
   .content {
     padding: var(--space-4) var(--space-4) var(--space-5);

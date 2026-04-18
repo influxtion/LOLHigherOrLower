@@ -60,15 +60,8 @@ export default function GameScreen({ mode, onChangeMode }) {
               outcome={leftOutcome}
               disabled={!canClick}
               onClick={() => game.onPick('left')}
+              side="left"
             />
-            <div className={styles.middle}>
-              <ScoreDisplay
-                score={game.score}
-                highScore={game.highScore}
-                modeLabel={modeDef.statLabel}
-              />
-              <VersusDivider />
-            </div>
             <ChampionCard
               champion={game.pair.right}
               mode={mode}
@@ -77,7 +70,18 @@ export default function GameScreen({ mode, onChangeMode }) {
               outcome={rightOutcome}
               disabled={!canClick}
               onClick={() => game.onPick('right')}
+              side="right"
             />
+            <div className={styles.dividerOverlay} aria-hidden>
+              <VersusDivider />
+            </div>
+            <div className={styles.scoreOverlay}>
+              <ScoreDisplay
+                score={game.score}
+                highScore={game.highScore}
+                modeLabel={modeDef.statLabel}
+              />
+            </div>
           </div>
 
           {isGameOver ? (

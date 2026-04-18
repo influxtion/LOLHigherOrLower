@@ -19,9 +19,9 @@
   --color-border-hot: #2a3a52;
 
   /* Text */
-  --color-text: #e6eaf2;
-  --color-text-dim: #8a94a6;
-  --color-text-faint: #5a6477;
+  --color-text: #eef1f7;
+  --color-text-dim: #b7c0d0;
+  --color-text-faint: #8892a3;
 
   /* Accents — gold is the single identity color. Used for the title wordmark,
      the active mode indicator, and the score numeral. Nothing else. */

@@ -5,9 +5,9 @@
 
 export const MODES = {
   HP: 'hp',
-  WIN_RATE: 'winRate',
   DIFFICULTY: 'difficulty',
   RELEASE: 'release',
+  SKIN_COUNT: 'skinCount',
 };
 
 export const MINIGAMES = {
@@ -24,13 +24,6 @@ export const MODE_LIST = [
     description: 'Compare base HP at level 1.',
   },
   {
-    id: MODES.WIN_RATE,
-    label: 'Win Rate',
-    shortLabel: 'WR',
-    statLabel: 'Win Rate (Emerald+)',
-    description: 'Compare Emerald+ ranked win rates.',
-  },
-  {
     id: MODES.DIFFICULTY,
     label: 'Difficulty',
     shortLabel: 'DIFF',
@@ -43,6 +36,13 @@ export const MODE_LIST = [
     shortLabel: 'DATE',
     statLabel: 'Released',
     description: 'Which champion came out first?',
+  },
+  {
+    id: MODES.SKIN_COUNT,
+    label: 'Skin Count',
+    shortLabel: 'SKINS',
+    statLabel: 'Skins',
+    description: 'Which champion has more skins?',
   },
 ];
 
@@ -100,6 +100,8 @@ export const CDRAGON = {
     `https://cdn.communitydragon.org/latest/champion/${championKey}/splash-art/centered/skin/${skinNum}`,
   skinsJsonUrl:
     'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/skins.json',
+  tileUrl: (championKey) =>
+    `https://cdn.communitydragon.org/latest/champion/${championKey}/tile`,
 };
 
 export const TIMINGS = {
@@ -109,17 +111,17 @@ export const TIMINGS = {
 
 export const STORAGE_KEYS = {
   highScoreHp: 'lolhl:highscore:hp',
-  highScoreWinRate: 'lolhl:highscore:winRate',
   highScoreDifficulty: 'lolhl:highscore:difficulty',
   highScoreRelease: 'lolhl:highscore:release',
+  highScoreSkinCount: 'lolhl:highscore:skinCount',
   bestPixelReveal: 'lolhl:best:pixelReveal',
   bestPixelRevealSkins: 'lolhl:best:pixelRevealSkins',
 };
 
 export const highScoreKeyFor = (mode) => {
-  if (mode === MODES.WIN_RATE) return STORAGE_KEYS.highScoreWinRate;
   if (mode === MODES.DIFFICULTY) return STORAGE_KEYS.highScoreDifficulty;
   if (mode === MODES.RELEASE) return STORAGE_KEYS.highScoreRelease;
+  if (mode === MODES.SKIN_COUNT) return STORAGE_KEYS.highScoreSkinCount;
   if (mode === MINIGAMES.PIXEL_REVEAL) return STORAGE_KEYS.bestPixelReveal;
   if (mode === MINIGAMES.PIXEL_REVEAL_SKINS) return STORAGE_KEYS.bestPixelRevealSkins;
   return STORAGE_KEYS.highScoreHp;

@@ -2,13 +2,11 @@
  * All network calls live here. Hooks and components only consume the
  * normalized `{ id, name, stat, imageUrl }` shape returned below.
  *
- * Mode 1 (Base HP) is fully live against Data Dragon.
- * Mode 2 (Win Rate) joins the live Data Dragon roster with a hand-curated
- * static dataset in src/data/winRates.json. There is no live win-rate fetch.
+ * Base HP and Difficulty are fully live against Data Dragon.
+ * Release Date joins the live roster with a hand-curated static dataset.
  */
 
 import { CDRAGON, DDRAGON, MINIGAMES, MODES } from './constants.js';
-import { getWinRate } from '../data/winRates.js';
 import { getReleaseDate } from '../data/releaseDates.js';
 
 /**
@@ -39,23 +37,6 @@ export async function fetchChampionsHP(version) {
       imageUrl: CDRAGON.centeredSplashUrl(champion.id),
     }))
     .filter((c) => Number.isFinite(c.stat));
-}
-
-/**
- * Builds the Mode 2 champion list: every champion from the live Data Dragon
- * roster, annotated with its win rate from the hand-curated static dataset.
- * Unknown-champion lookups fall back to 50.0 inside getWinRate() so a newly
- * added champion is still playable (just centered) until the dataset is
- * updated by hand.
- */
-export async function fetchChampionsWinRate(version) {
-  const payload = await fetchChampionPayload(version);
-  return Object.values(payload?.data ?? {}).map((champion) => ({
-    id: champion.id,
-    name: champion.name,
-    stat: getWinRate(champion.id),
-    imageUrl: CDRAGON.centeredSplashUrl(champion.id),
-  }));
 }
 
 /**
@@ -91,6 +72,35 @@ export async function fetchChampionsRelease(version) {
       imageUrl: CDRAGON.centeredSplashUrl(champion.id),
     }))
     .filter((c) => Number.isFinite(c.stat));
+}
+
+/**
+ * Builds the Skin-Count mode champion list. Counts non-base skins per champion
+ * from CDragon's bulk skins.json — same source as the Fog of War: Skins
+ * minigame, keeping "number of skins" consistent across the app.
+ */
+export async function fetchChampionsSkinCount(version) {
+  const [payload, skinsMap] = await Promise.all([
+    fetchChampionPayload(version),
+    fetchSkinsPayload(),
+  ]);
+
+  const champions = Object.values(payload?.data ?? {});
+  const counts = new Map(champions.map((c) => [Number(c.key), 0]));
+  for (const skin of Object.values(skinsMap)) {
+    if (!skin || skin.isBase) continue;
+    const championKey = Math.floor(skin.id / 1000);
+    if (counts.has(championKey)) {
+      counts.set(championKey, counts.get(championKey) + 1);
+    }
+  }
+
+  return champions.map((champion) => ({
+    id: champion.id,
+    name: champion.name,
+    stat: counts.get(Number(champion.key)) ?? 0,
+    imageUrl: CDRAGON.centeredSplashUrl(champion.id),
+  }));
 }
 
 /**
@@ -148,6 +158,22 @@ async function fetchSkinsPayload() {
   return response.json();
 }
 
+/**
+ * Lightweight roster fetch for the menu-screen orbit background. Returns the
+ * numeric key + DDragon id for every live champion. Uses the same batch
+ * endpoint as every other mode, so the browser HTTP cache covers repeat calls
+ * when the user bounces between menu and a mode.
+ */
+export async function fetchChampionTiles() {
+  const version = await fetchLatestVersion();
+  const payload = await fetchChampionPayload(version);
+  return Object.values(payload?.data ?? {}).map((champion) => ({
+    id: champion.id,
+    key: champion.key,
+    tileUrl: CDRAGON.tileUrl(champion.key),
+  }));
+}
+
 async function fetchChampionPayload(version) {
   const response = await fetch(DDRAGON.championDataUrl(version));
   if (!response.ok) throw new Error(`champion.json HTTP ${response.status}`);
@@ -160,9 +186,9 @@ async function fetchChampionPayload(version) {
  */
 export async function fetchChampionsForMode(mode) {
   const version = await fetchLatestVersion();
-  if (mode === MODES.WIN_RATE) return fetchChampionsWinRate(version);
   if (mode === MODES.DIFFICULTY) return fetchChampionsDifficulty(version);
   if (mode === MODES.RELEASE) return fetchChampionsRelease(version);
+  if (mode === MODES.SKIN_COUNT) return fetchChampionsSkinCount(version);
   if (mode === MINIGAMES.PIXEL_REVEAL) return fetchChampionsForPixelReveal(version);
   if (mode === MINIGAMES.PIXEL_REVEAL_SKINS) return fetchChampionsForPixelRevealSkins(version);
   return fetchChampionsHP(version);

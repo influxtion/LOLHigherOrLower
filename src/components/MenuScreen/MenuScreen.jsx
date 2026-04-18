@@ -1,10 +1,12 @@
 import { GAME_GROUPS } from '../../utils/constants.js';
+import ChampionOrbit from './ChampionOrbit.jsx';
 import styles from './MenuScreen.module.css';
 
 export default function MenuScreen({ onStart }) {
   return (
     <main className={styles.screen}>
-      <div className={styles.hero}>
+      <ChampionOrbit />
+      <div className={`${styles.hero} ${styles.foreground}`}>
         <span className={styles.eyebrow}>League of Legends</span>
         <h1 className={styles.title}>
           <span className={styles.titleLine1}>Stat</span>
@@ -16,7 +18,7 @@ export default function MenuScreen({ onStart }) {
         </p>
       </div>
 
-      <div className={styles.groups}>
+      <div className={`${styles.groups} ${styles.foreground}`}>
         {GAME_GROUPS.map((group) => (
           <section key={group.id} className={styles.group}>
             <header className={styles.groupHead}>

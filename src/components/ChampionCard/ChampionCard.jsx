@@ -20,6 +20,7 @@ export default function ChampionCard({
   outcome,
   disabled,
   onClick,
+  side,
 }) {
   const [imageReady, setImageReady] = useState(false);
 
@@ -39,10 +40,12 @@ export default function ChampionCard({
         ? styles.incorrect
         : '';
 
+  const sideClass = side === 'right' ? styles.right : styles.left;
+
   return (
     <button
       type="button"
-      className={`${styles.card} ${stateClass}`}
+      className={`${styles.card} ${sideClass} ${stateClass}`}
       onClick={onClick}
       disabled={disabled}
       aria-label={`Choose ${champion.name}`}

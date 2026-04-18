@@ -1,15 +1,14 @@
+/* The divider IS the border between the two halves. A full-height gold
+   gradient line with a VS badge anchored to the middle. */
 .divider {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
-  min-width: 56px;
-  /* Fill the remaining height of the middle column below the score box. */
-  flex: 1;
-  align-self: stretch;
-  color: var(--color-gold);
   user-select: none;
+  color: var(--color-gold);
+  position: relative;
+  height: 100%;
 }
 
 .line {
@@ -17,41 +16,51 @@
   flex: 1;
   background: linear-gradient(
     to bottom,
-    transparent,
-    rgba(200, 162, 90, 0.5) 40%,
-    rgba(200, 162, 90, 0.5) 60%,
-    transparent
+    transparent 0%,
+    rgba(200, 162, 90, 0.55) 15%,
+    rgba(200, 162, 90, 0.55) 85%,
+    transparent 100%
   );
+  box-shadow: 0 0 14px rgba(200, 162, 90, 0.35);
   min-height: 40px;
 }
 
+/* Solid dark badge sits on the seam, so "VS" reads over both halves. */
 .label {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--fs-lg);
   letter-spacing: var(--tracking-loose);
   color: var(--color-gold);
+  padding: var(--space-2) var(--space-3);
+  margin: var(--space-3) 0;
+  background: var(--color-bg-deep);
+  border: 1px solid rgba(200, 162, 90, 0.4);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 24px rgba(200, 162, 90, 0.2);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 599px) {
   .divider {
     flex-direction: row;
     width: 100%;
-    min-width: 0;
-    min-height: 0;
-    padding: var(--space-2) 0;
+    height: auto;
   }
   .line {
     flex: 1;
     height: 1px;
     width: auto;
     min-height: 0;
+    min-width: 40px;
     background: linear-gradient(
       to right,
-      transparent,
-      rgba(200, 162, 90, 0.5) 40%,
-      rgba(200, 162, 90, 0.5) 60%,
-      transparent
+      transparent 0%,
+      rgba(200, 162, 90, 0.55) 15%,
+      rgba(200, 162, 90, 0.55) 85%,
+      transparent 100%
     );
+  }
+  .label {
+    margin: 0 var(--space-3);
   }
 }
