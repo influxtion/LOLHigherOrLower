@@ -105,6 +105,49 @@ export async function fetchChampionsForPixelReveal(version) {
   }));
 }
 
+/**
+ * Skins variant of Pixel Reveal. The puzzle pool is one entry per non-base
+ * skin, but every entry is keyed by its champion's id — so the guess loop
+ * (match by id) and the autocomplete (deduped champion list) work unchanged.
+ *
+ * Skin IDs from CDragon encode both champion numeric key and skin number:
+ *   skinId = championKey * 1000 + skinNum
+ * We map the numeric key back to the Data Dragon string id via champion.json.
+ */
+export async function fetchChampionsForPixelRevealSkins(version) {
+  const [payload, skinsMap] = await Promise.all([
+    fetchChampionPayload(version),
+    fetchSkinsPayload(),
+  ]);
+
+  const champions = Object.values(payload?.data ?? {});
+  const keyToChampion = new Map(
+    champions.map((c) => [Number(c.key), { id: c.id, name: c.name }]),
+  );
+
+  const entries = [];
+  for (const skin of Object.values(skinsMap)) {
+    if (!skin || skin.isBase) continue;
+    const championKey = Math.floor(skin.id / 1000);
+    const skinNum = skin.id % 1000;
+    const champion = keyToChampion.get(championKey);
+    if (!champion) continue;
+    entries.push({
+      id: champion.id,
+      name: champion.name,
+      skinName: skin.name,
+      imageUrl: CDRAGON.skinCenteredSplashUrl(championKey, skinNum),
+    });
+  }
+  return entries;
+}
+
+async function fetchSkinsPayload() {
+  const response = await fetch(CDRAGON.skinsJsonUrl);
+  if (!response.ok) throw new Error(`skins.json HTTP ${response.status}`);
+  return response.json();
+}
+
 async function fetchChampionPayload(version) {
   const response = await fetch(DDRAGON.championDataUrl(version));
   if (!response.ok) throw new Error(`champion.json HTTP ${response.status}`);
@@ -121,5 +164,6 @@ export async function fetchChampionsForMode(mode) {
   if (mode === MODES.DIFFICULTY) return fetchChampionsDifficulty(version);
   if (mode === MODES.RELEASE) return fetchChampionsRelease(version);
   if (mode === MINIGAMES.PIXEL_REVEAL) return fetchChampionsForPixelReveal(version);
+  if (mode === MINIGAMES.PIXEL_REVEAL_SKINS) return fetchChampionsForPixelRevealSkins(version);
   return fetchChampionsHP(version);
 }

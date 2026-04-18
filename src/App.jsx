@@ -42,7 +42,7 @@ export default function App() {
         {screen === SCREEN.menu ? (
           <MenuScreen onStart={handleStart} />
         ) : isMinigame ? (
-          <PixelRevealScreen key={mode} onChangeMode={handleGoHome} />
+          <PixelRevealScreen key={mode} mode={mode} onChangeMode={handleGoHome} />
         ) : (
           <GameScreen
             key={mode}

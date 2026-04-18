@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useChampionData } from '../../hooks/useChampionData.js';
 import { usePixelReveal, PIXEL_PHASE } from '../../hooks/usePixelReveal.js';
 import { MINIGAMES } from '../../utils/constants.js';
@@ -6,10 +6,25 @@ import PixelCanvas from './PixelCanvas.jsx';
 import ChampionSearchInput from './ChampionSearchInput.jsx';
 import styles from './PixelRevealScreen.module.css';
 
-export default function PixelRevealScreen({ onChangeMode }) {
-  const { champions, loading, error } = useChampionData(MINIGAMES.PIXEL_REVEAL);
-  const game = usePixelReveal(champions);
+export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL, onChangeMode }) {
+  const isSkins = mode === MINIGAMES.PIXEL_REVEAL_SKINS;
+  const { champions, loading, error } = useChampionData(mode);
+  const game = usePixelReveal(champions, mode);
   const [flash, setFlash] = useState(false);
+
+  // Skins mode: the pool has multiple entries per champion (one per skin), all
+  // sharing the champion's id. The search autocomplete needs unique champions.
+  const searchChampions = useMemo(() => {
+    if (!isSkins) return champions;
+    const seen = new Set();
+    const out = [];
+    for (const c of champions) {
+      if (seen.has(c.id)) continue;
+      seen.add(c.id);
+      out.push({ id: c.id, name: c.name });
+    }
+    return out;
+  }, [champions, isSkins]);
 
   const isSolved = game.phase === PIXEL_PHASE.solved;
 
@@ -46,9 +61,13 @@ export default function PixelRevealScreen({ onChangeMode }) {
     <main className={styles.screen}>
       <header className={styles.header}>
         <div>
-          <h1 className={styles.title}>Fog of War</h1>
+          <h1 className={styles.title}>
+            {isSkins ? 'Fog of War: Skins' : 'Fog of War'}
+          </h1>
           <p className={styles.subtitle}>
-            Identify the champion. Each wrong guess lifts the fog.
+            {isSkins
+              ? 'Identify the champion from a random skin splash. Each wrong guess lifts the fog.'
+              : 'Identify the champion. Each wrong guess lifts the fog.'}
           </p>
         </div>
         <div className={styles.stats}>
@@ -74,6 +93,9 @@ export default function PixelRevealScreen({ onChangeMode }) {
       {isSolved ? (
         <div className={styles.solved}>
           <p className={styles.solvedName}>{game.champion.name}</p>
+          {isSkins && game.champion.skinName ? (
+            <p className={styles.solvedSkin}>{game.champion.skinName}</p>
+          ) : null}
           <p className={styles.solvedMeta}>
             Solved in {game.attempts}{' '}
             {game.attempts === 1 ? 'wrong guess' : 'wrong guesses'}
@@ -100,7 +122,7 @@ export default function PixelRevealScreen({ onChangeMode }) {
         </div>
       ) : (
         <ChampionSearchInput
-          champions={champions}
+          champions={searchChampions}
           onSubmit={handleSubmit}
           resetKey={game.champion.id}
         />

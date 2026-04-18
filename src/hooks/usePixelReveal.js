@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocalStorage } from './useLocalStorage.js';
 import { pickRandomExcluding } from '../utils/random.js';
-import {
-  MINIGAMES,
-  PIXEL_REVEAL_STEPS,
-  highScoreKeyFor,
-} from '../utils/constants.js';
+import { PIXEL_REVEAL_STEPS, highScoreKeyFor } from '../utils/constants.js';
 
 export const PIXEL_PHASE = {
   guessing: 'guessing',
@@ -22,9 +18,9 @@ const RECENT_RING = 20;
  * - `bestAttempts` is persisted per-browser: the fewest wrong guesses ever
  *   taken to solve a single champion. A solve on the first try stores 0.
  */
-export function usePixelReveal(champions) {
+export function usePixelReveal(champions, mode) {
   const [bestAttempts, setBestAttempts] = useLocalStorage(
-    highScoreKeyFor(MINIGAMES.PIXEL_REVEAL),
+    highScoreKeyFor(mode),
     null,
   );
   const [champion, setChampion] = useState(null);

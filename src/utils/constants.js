@@ -12,6 +12,7 @@ export const MODES = {
 
 export const MINIGAMES = {
   PIXEL_REVEAL: 'pixelReveal',
+  PIXEL_REVEAL_SKINS: 'pixelRevealSkins',
 };
 
 export const MODE_LIST = [
@@ -52,6 +53,12 @@ export const MINIGAMES_LIST = [
     shortLabel: 'FOG',
     description: 'Identify the champion through a veil of pixels.',
   },
+  {
+    id: MINIGAMES.PIXEL_REVEAL_SKINS,
+    label: 'Fog of War: Skins',
+    shortLabel: 'SKINS',
+    description: 'Same fog — but a random skin splash. Often barely recognizable.',
+  },
 ];
 
 export const isMinigameId = (id) =>
@@ -89,6 +96,10 @@ export const DDRAGON = {
 export const CDRAGON = {
   centeredSplashUrl: (championId) =>
     `https://cdn.communitydragon.org/latest/champion/${championId}/splash-art/centered`,
+  skinCenteredSplashUrl: (championKey, skinNum) =>
+    `https://cdn.communitydragon.org/latest/champion/${championKey}/splash-art/centered/skin/${skinNum}`,
+  skinsJsonUrl:
+    'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/skins.json',
 };
 
 export const TIMINGS = {
@@ -102,6 +113,7 @@ export const STORAGE_KEYS = {
   highScoreDifficulty: 'lolhl:highscore:difficulty',
   highScoreRelease: 'lolhl:highscore:release',
   bestPixelReveal: 'lolhl:best:pixelReveal',
+  bestPixelRevealSkins: 'lolhl:best:pixelRevealSkins',
 };
 
 export const highScoreKeyFor = (mode) => {
@@ -109,6 +121,7 @@ export const highScoreKeyFor = (mode) => {
   if (mode === MODES.DIFFICULTY) return STORAGE_KEYS.highScoreDifficulty;
   if (mode === MODES.RELEASE) return STORAGE_KEYS.highScoreRelease;
   if (mode === MINIGAMES.PIXEL_REVEAL) return STORAGE_KEYS.bestPixelReveal;
+  if (mode === MINIGAMES.PIXEL_REVEAL_SKINS) return STORAGE_KEYS.bestPixelRevealSkins;
   return STORAGE_KEYS.highScoreHp;
 };
 
