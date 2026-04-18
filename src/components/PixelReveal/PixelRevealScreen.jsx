@@ -42,27 +42,27 @@ export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL }) {
 
   if (error) {
     return (
-      <section className={styles.screen}>
+      <main className={styles.screen}>
         <div className={styles.message}>
           <p className={styles.messageTitle}>Couldn't load champions.</p>
           <p className={styles.messageBody}>Check your connection and try again.</p>
         </div>
-      </section>
+      </main>
     );
   }
 
   if (loading || !game.champion) {
     return (
-      <section className={styles.screen}>
+      <main className={styles.screen}>
         <div className={styles.message} aria-live="polite">
           <span className={styles.loadingText}>Summoning champions</span>
         </div>
-      </section>
+      </main>
     );
   }
 
   return (
-    <section className={styles.screen}>
+    <main className={styles.screen}>
       <header className={styles.header}>
         <div className={styles.stats}>
           <Stat label="Attempts" value={game.attempts} />
@@ -121,7 +121,7 @@ export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL }) {
           resetKey={game.champion.id}
         />
       )}
-    </section>
+    </main>
   );
 }
 

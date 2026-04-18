@@ -36,7 +36,7 @@ export default function GameScreen({ mode }) {
   const rightOutcome = outcomeFor('right', game.pair, game.playerPick);
 
   return (
-    <section className={styles.screen}>
+    <main className={styles.screen}>
       {error ? (
         <div className={styles.errorState}>
           <p className={styles.errorTitle}>Couldn't load champions.</p>
@@ -100,7 +100,7 @@ export default function GameScreen({ mode }) {
           ) : null}
         </>
       )}
-    </section>
+    </main>
   );
 }
 
