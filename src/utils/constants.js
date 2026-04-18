@@ -23,12 +23,12 @@ export const MODE_LIST = [
     shortLabel: 'HP',
     statLabel: 'Base HP',
     description: 'Compare base HP at level 1.',
-    pageTitle: 'Base HP Quiz — StatRift',
+    pageTitle: 'League of Legends Higher or Lower — Base HP | StatRift',
     pageDescription:
-      'Guess which League of Legends champion has higher base HP at level 1. How many can you get in a row?',
+      "Play League of Legends Higher or Lower with champion base HP. Guess which LoL champion starts with more HP at level 1 and build a streak. Free browser-based LoL trivia game.",
     pageHeading: 'Base HP — Higher or Lower?',
     pageIntro:
-      "Which League of Legends champion starts with more HP at level 1? Base HP values are pulled live from Riot's Data Dragon — no interpretation, just the raw number. Pick correctly and chain a streak as long as you can.",
+      "A League of Legends Higher or Lower game built around base HP. Which LoL champion starts with more HP at level 1? Values are pulled live from Riot's Data Dragon — no interpretation, just the raw number. Pick correctly and chain a streak as long as you can.",
   },
   {
     id: MODES.DIFFICULTY,
@@ -37,12 +37,12 @@ export const MODE_LIST = [
     shortLabel: 'DIFF',
     statLabel: 'Difficulty',
     description: "Compare Riot's 1–10 difficulty rating.",
-    pageTitle: 'Difficulty Quiz — StatRift',
+    pageTitle: 'League of Legends Higher or Lower — Difficulty | StatRift',
     pageDescription:
-      "Guess which League of Legends champion has the higher Riot difficulty rating. How well do you know the roster?",
+      "Play League of Legends Higher or Lower with Riot's champion difficulty rating. Guess which LoL champion is rated harder to play and chain a streak. Free LoL trivia game.",
     pageHeading: 'Difficulty — Higher or Lower?',
     pageIntro:
-      "Every League of Legends champion gets a 1–10 difficulty rating in the client. Guess which of the two champions Riot rates as harder to play. Ties always count as correct.",
+      "A League of Legends Higher or Lower game built around Riot's 1–10 champion difficulty rating. Guess which of the two LoL champions Riot rates as harder to play. Ties count as correct.",
   },
   {
     id: MODES.RELEASE,
@@ -51,12 +51,12 @@ export const MODE_LIST = [
     shortLabel: 'DATE',
     statLabel: 'Released',
     description: 'Which champion came out first?',
-    pageTitle: 'Release Date Quiz — StatRift',
+    pageTitle: 'League of Legends Higher or Lower — Release Date | StatRift',
     pageDescription:
-      'Guess which League of Legends champion was released first. A trivia game for roster veterans.',
+      "Play League of Legends Higher or Lower with champion release dates. Guess which LoL champion came out first, from Annie in 2009 to the latest release. Free LoL trivia.",
     pageHeading: 'Release Date — Earlier or Later?',
     pageIntro:
-      "From Annie in 2009 to the latest release, every champion has a launch date. Pick the one that came out earlier. A trivia game for long-time League players.",
+      "A League of Legends Higher or Lower game built around champion release dates. From Annie in 2009 to the latest release, pick the LoL champion that came out earlier and chain a streak. A trivia game for long-time League players.",
   },
   {
     id: MODES.SKIN_COUNT,
@@ -65,12 +65,12 @@ export const MODE_LIST = [
     shortLabel: 'SKINS',
     statLabel: 'Skins',
     description: 'Which champion has more skins?',
-    pageTitle: 'Skin Count Quiz — StatRift',
+    pageTitle: 'League of Legends Higher or Lower — Skin Count | StatRift',
     pageDescription:
-      'Guess which League of Legends champion has more skins. Higher-or-lower trivia for LoL fans.',
+      "Play League of Legends Higher or Lower with champion skin counts. Guess which LoL champion has more skins across the full roster. Free browser-based LoL trivia.",
     pageHeading: 'Skin Count — Higher or Lower?',
     pageIntro:
-      "Ahri and Lux are the obvious answers. The rest are trickier. Pick which champion has more skins across the full League catalogue — base skin counted.",
+      "A League of Legends Higher or Lower game built around skin counts. Ahri and Lux are the obvious answers — the rest are trickier. Pick which LoL champion has more skins across the full catalogue (base skin counted) and chain a streak.",
   },
 ];
 
@@ -81,12 +81,12 @@ export const MINIGAMES_LIST = [
     label: 'Fog of War',
     shortLabel: 'FOG',
     description: 'Identify the champion through a veil of pixels.',
-    pageTitle: 'Fog of War — StatRift',
+    pageTitle: 'League of Legends Pixel Art Guessing Game — Fog of War | StatRift',
     pageDescription:
-      'Identify the League of Legends champion through a veil of pixels. Each wrong guess lifts the fog a little more.',
+      "A League of Legends pixelated art guessing game. Identify the LoL champion from pixelated splash art — each wrong guess clears a little more of the fog. Free and browser-based.",
     pageHeading: 'Fog of War',
     pageIntro:
-      "Identify the League of Legends champion from behind a veil of pixels. Each wrong guess clears a little more of the fog. Fewer guesses is better — how low can you go?",
+      "A League of Legends pixel art guessing game. Identify the LoL champion from behind a veil of pixels — each wrong guess clears a little more of the fog. Fewer guesses is better. How low can you go?",
   },
   {
     id: MINIGAMES.PIXEL_REVEAL_SKINS,
@@ -94,12 +94,12 @@ export const MINIGAMES_LIST = [
     label: 'Fog of War: Skins',
     shortLabel: 'SKINS',
     description: 'Same fog — but a random skin splash. Often barely recognizable.',
-    pageTitle: 'Fog of War: Skins — StatRift',
+    pageTitle: 'LoL Skin Pixel Art Guessing Game — Fog of War: Skins | StatRift',
     pageDescription:
-      'Identify the champion from a random skin splash, half-hidden by fog. The harder variant of Fog of War.',
+      "A League of Legends pixelated art guessing game, skin edition. Identify the LoL champion from a random pixelated skin splash. The harder variant of Fog of War.",
     pageHeading: 'Fog of War: Skins',
     pageIntro:
-      "Same fog, same fewer-is-better scoring — but the splash art is from a random skin. Often barely recognisable. The harder variant of Fog of War, for players who know the roster cold.",
+      "The harder variant of our League of Legends pixel art guessing game. Same fog, same fewer-is-better scoring — but the splash art is from a random skin instead of the base art. Often barely recognisable. For players who know the roster cold.",
   },
 ];
 
@@ -129,13 +129,15 @@ export const GAME_GROUPS = [
   {
     id: 'higherLower',
     label: 'Higher Or Lower?',
-    tagline: 'Pick the character with the higher stat.',
+    tagline:
+      'League of Legends Higher or Lower — pick the LoL champion with the higher stat.',
     entries: MODE_LIST,
   },
   {
     id: 'pixelReveal',
     label: 'Fog of War',
-    tagline: 'Identify a champion through a veil of pixels.',
+    tagline:
+      'A League of Legends pixel art guessing game. Identify the LoL champion through a veil of pixels.',
     entries: MINIGAMES_LIST,
   },
 ];
