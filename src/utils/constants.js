@@ -18,48 +18,106 @@ export const MINIGAMES = {
 export const MODE_LIST = [
   {
     id: MODES.HP,
+    slug: 'hp',
     label: 'Base HP',
     shortLabel: 'HP',
     statLabel: 'Base HP',
     description: 'Compare base HP at level 1.',
+    pageTitle: 'Base HP Quiz — StatRift',
+    pageDescription:
+      'Guess which League of Legends champion has higher base HP at level 1. How many can you get in a row?',
+    pageHeading: 'Base HP — Higher or Lower?',
+    pageIntro:
+      "Which League of Legends champion starts with more HP at level 1? Base HP values are pulled live from Riot's Data Dragon — no interpretation, just the raw number. Pick correctly and chain a streak as long as you can.",
   },
   {
     id: MODES.DIFFICULTY,
+    slug: 'difficulty',
     label: 'Difficulty',
     shortLabel: 'DIFF',
     statLabel: 'Difficulty',
     description: "Compare Riot's 1–10 difficulty rating.",
+    pageTitle: 'Difficulty Quiz — StatRift',
+    pageDescription:
+      "Guess which League of Legends champion has the higher Riot difficulty rating. How well do you know the roster?",
+    pageHeading: 'Difficulty — Higher or Lower?',
+    pageIntro:
+      "Every League of Legends champion gets a 1–10 difficulty rating in the client. Guess which of the two champions Riot rates as harder to play. Ties always count as correct.",
   },
   {
     id: MODES.RELEASE,
+    slug: 'release',
     label: 'Release Date',
     shortLabel: 'DATE',
     statLabel: 'Released',
     description: 'Which champion came out first?',
+    pageTitle: 'Release Date Quiz — StatRift',
+    pageDescription:
+      'Guess which League of Legends champion was released first. A trivia game for roster veterans.',
+    pageHeading: 'Release Date — Earlier or Later?',
+    pageIntro:
+      "From Annie in 2009 to the latest release, every champion has a launch date. Pick the one that came out earlier. A trivia game for long-time League players.",
   },
   {
     id: MODES.SKIN_COUNT,
+    slug: 'skins',
     label: 'Skin Count',
     shortLabel: 'SKINS',
     statLabel: 'Skins',
     description: 'Which champion has more skins?',
+    pageTitle: 'Skin Count Quiz — StatRift',
+    pageDescription:
+      'Guess which League of Legends champion has more skins. Higher-or-lower trivia for LoL fans.',
+    pageHeading: 'Skin Count — Higher or Lower?',
+    pageIntro:
+      "Ahri and Lux are the obvious answers. The rest are trickier. Pick which champion has more skins across the full League catalogue — base skin counted.",
   },
 ];
 
 export const MINIGAMES_LIST = [
   {
     id: MINIGAMES.PIXEL_REVEAL,
+    slug: 'fog-of-war',
     label: 'Fog of War',
     shortLabel: 'FOG',
     description: 'Identify the champion through a veil of pixels.',
+    pageTitle: 'Fog of War — StatRift',
+    pageDescription:
+      'Identify the League of Legends champion through a veil of pixels. Each wrong guess lifts the fog a little more.',
+    pageHeading: 'Fog of War',
+    pageIntro:
+      "Identify the League of Legends champion from behind a veil of pixels. Each wrong guess clears a little more of the fog. Fewer guesses is better — how low can you go?",
   },
   {
     id: MINIGAMES.PIXEL_REVEAL_SKINS,
+    slug: 'fog-of-war-skins',
     label: 'Fog of War: Skins',
     shortLabel: 'SKINS',
     description: 'Same fog — but a random skin splash. Often barely recognizable.',
+    pageTitle: 'Fog of War: Skins — StatRift',
+    pageDescription:
+      'Identify the champion from a random skin splash, half-hidden by fog. The harder variant of Fog of War.',
+    pageHeading: 'Fog of War: Skins',
+    pageIntro:
+      "Same fog, same fewer-is-better scoring — but the splash art is from a random skin. Often barely recognisable. The harder variant of Fog of War, for players who know the roster cold.",
   },
 ];
+
+/* Unified lookup: every playable entry (HoL modes + minigames) in one list.
+   Used by the Astro page router (`[mode].astro`) and by the sidebar to
+   resolve slug ↔ id without caring which group the entry belongs to. */
+export const ALL_MODES = [...MODE_LIST, ...MINIGAMES_LIST];
+
+export const modeIdToSlug = (id) =>
+  ALL_MODES.find((m) => m.id === id)?.slug ?? null;
+
+export const slugToMode = (slug) =>
+  ALL_MODES.find((m) => m.slug === slug) ?? null;
+
+export const pathForMode = (id) => {
+  const slug = modeIdToSlug(id);
+  return slug ? `/play/${slug}` : '/';
+};
 
 export const isMinigameId = (id) =>
   MINIGAMES_LIST.some((m) => m.id === id);

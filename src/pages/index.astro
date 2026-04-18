@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ChampionOrbit from '../components/MenuScreen/ChampionOrbit.jsx';
+import { GAME_GROUPS, pathForMode } from '../utils/constants.js';
+import styles from '../components/MenuScreen/MenuScreen.module.css';
+
+const title = 'StatRift — League of Legends Trivia Games';
+const description =
+  'A collection of small League of Legends trivia games. Base HP, difficulty, release date, skin count, and Fog of War. Know the roster — prove it.';
+---
+
+<BaseLayout title={title} description={description}>
+  <main class={styles.screen}>
+    <ChampionOrbit client:only="react" />
+
+    <div class={`${styles.hero} ${styles.foreground}`}>
+      <span class={styles.eyebrow}>League of Legends</span>
+      <h1 class={styles.title}>
+        <span class={styles.titleLine1}>Stat</span>
+        <span class={styles.titleLine2}>Rift</span>
+      </h1>
+      <p class={styles.subtitle}>
+        A collection of small League of Legends challenges. Know the roster — prove it.
+      </p>
+    </div>
+
+    <div class={`${styles.groups} ${styles.foreground}`}>
+      {
+        GAME_GROUPS.map((group) => (
+          <section class={styles.group}>
+            <header class={styles.groupHead}>
+              <h2 class={styles.groupLabel}>{group.label}</h2>
+              <p class={styles.groupTagline}>{group.tagline}</p>
+            </header>
+            <div class={styles.modeGrid}>
+              {group.entries.map((entry) => (
+                <a href={pathForMode(entry.id)} class={styles.modeCard}>
+                  <span class={styles.modeCardLabel}>{entry.label}</span>
+                  <span class={styles.modeCardDescription}>
+                    {entry.description}
+                  </span>
+                  <span class={styles.modeCardArrow} aria-hidden="true">→</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </main>
+</BaseLayout>

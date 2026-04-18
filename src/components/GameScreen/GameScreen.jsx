@@ -8,7 +8,11 @@ import { useGameState, PHASE } from '../../hooks/useGameState.js';
 import { MODE_LIST } from '../../utils/constants.js';
 import styles from './GameScreen.module.css';
 
-export default function GameScreen({ mode, onChangeMode }) {
+export default function GameScreen({ mode }) {
+  const goHome = () => {
+    window.location.href = '/';
+  };
+
   const modeDef = useMemo(
     () => MODE_LIST.find((m) => m.id === mode) ?? MODE_LIST[0],
     [mode],
@@ -32,7 +36,7 @@ export default function GameScreen({ mode, onChangeMode }) {
   const rightOutcome = outcomeFor('right', game.pair, game.playerPick);
 
   return (
-    <main className={styles.screen}>
+    <section className={styles.screen}>
       {error ? (
         <div className={styles.errorState}>
           <p className={styles.errorTitle}>Couldn't load champions.</p>
@@ -91,12 +95,12 @@ export default function GameScreen({ mode, onChangeMode }) {
               modeLabel={modeDef.statLabel}
               isNewHighScore={game.beatHighScore}
               onPlayAgain={game.onPlayAgain}
-              onChangeMode={onChangeMode}
+              onChangeMode={goHome}
             />
           ) : null}
         </>
       )}
-    </main>
+    </section>
   );
 }
 

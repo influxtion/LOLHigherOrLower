@@ -6,7 +6,11 @@ import PixelCanvas from './PixelCanvas.jsx';
 import ChampionSearchInput from './ChampionSearchInput.jsx';
 import styles from './PixelRevealScreen.module.css';
 
-export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL, onChangeMode }) {
+export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL }) {
+  const goHome = () => {
+    window.location.href = '/';
+  };
+
   const isSkins = mode === MINIGAMES.PIXEL_REVEAL_SKINS;
   const { champions, loading, error } = useChampionData(mode);
   const game = usePixelReveal(champions, mode);
@@ -38,38 +42,28 @@ export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL, onCha
 
   if (error) {
     return (
-      <main className={styles.screen}>
+      <section className={styles.screen}>
         <div className={styles.message}>
           <p className={styles.messageTitle}>Couldn't load champions.</p>
           <p className={styles.messageBody}>Check your connection and try again.</p>
         </div>
-      </main>
+      </section>
     );
   }
 
   if (loading || !game.champion) {
     return (
-      <main className={styles.screen}>
+      <section className={styles.screen}>
         <div className={styles.message} aria-live="polite">
           <span className={styles.loadingText}>Summoning champions</span>
         </div>
-      </main>
+      </section>
     );
   }
 
   return (
-    <main className={styles.screen}>
+    <section className={styles.screen}>
       <header className={styles.header}>
-        <div>
-          <h1 className={styles.title}>
-            {isSkins ? 'Fog of War: Skins' : 'Fog of War'}
-          </h1>
-          <p className={styles.subtitle}>
-            {isSkins
-              ? 'Identify the champion from a random skin splash. Each wrong guess lifts the fog.'
-              : 'Identify the champion. Each wrong guess lifts the fog.'}
-          </p>
-        </div>
         <div className={styles.stats}>
           <Stat label="Attempts" value={game.attempts} />
           <Stat
@@ -114,7 +108,7 @@ export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL, onCha
             <button
               type="button"
               className={styles.ghostBtn}
-              onClick={onChangeMode}
+              onClick={goHome}
             >
               Change Mode
             </button>
@@ -127,7 +121,7 @@ export default function PixelRevealScreen({ mode = MINIGAMES.PIXEL_REVEAL, onCha
           resetKey={game.champion.id}
         />
       )}
-    </main>
+    </section>
   );
 }
 

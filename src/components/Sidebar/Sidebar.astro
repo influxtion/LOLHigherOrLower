@@ -1,0 +1,60 @@
+---
+import { GAME_GROUPS, pathForMode } from '../../utils/constants.js';
+import styles from './Sidebar.module.css';
+
+const pathname = Astro.url.pathname;
+
+function isActive(modeId) {
+  return pathname === pathForMode(modeId);
+}
+---
+
+<aside class={styles.sidebar} aria-label="Game navigation">
+  <a href="/" class={styles.brand} aria-label="Return to menu">
+    <span class={styles.brandMark}>S</span>
+    <span class={styles.brandText}>
+      <span class={styles.brandLine1}>Stat</span>
+      <span class={styles.brandLine2}>Rift</span>
+    </span>
+  </a>
+
+  <nav class={styles.nav}>
+    {
+      GAME_GROUPS.map((group, i) => (
+        <section
+          class={`${styles.group} ${i > 0 ? styles.groupDivider : ''}`}
+        >
+          <div class={styles.groupHead}>
+            <span class={styles.groupLabel}>{group.label}</span>
+            <span class={styles.groupTagline}>{group.tagline}</span>
+          </div>
+          <ul class={styles.modeList}>
+            {group.entries.map((entry) => (
+              <li>
+                <a
+                  href={pathForMode(entry.id)}
+                  class={`${styles.modeButton} ${
+                    isActive(entry.id) ? styles.modeButtonActive : ''
+                  }`}
+                  aria-current={isActive(entry.id) ? 'page' : undefined}
+                >
+                  <span class={styles.modeBullet} aria-hidden="true" />
+                  <span class={styles.modeLabelBlock}>
+                    <span class={styles.modeLabel}>{entry.label}</span>
+                    <span class={styles.modeDescription}>
+                      {entry.description}
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </nav>
+
+  <div class={styles.foot}>
+    <span class={styles.footText}>Data: Riot Data Dragon</span>
+  </div>
+</aside>
