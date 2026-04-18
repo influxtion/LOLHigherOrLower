@@ -6,7 +6,7 @@
  * Release Date joins the live roster with a hand-curated static dataset.
  */
 
-import { CDRAGON, DDRAGON, MINIGAMES, MODES } from './constants.js';
+import { CDRAGON, DDRAGON, MINIGAMES, MODES, ROSTER_GAMES } from './constants.js';
 import { getReleaseDate } from '../data/releaseDates.js';
 
 /**
@@ -104,6 +104,97 @@ export async function fetchChampionsSkinCount(version) {
 }
 
 /**
+ * Ability Builder roster — just identity + splash + tile, no abilities.
+ * Abilities are fetched per-champion on demand via fetchChampionAbilities()
+ * so we don't blow up the app with ~170 detail fetches up front.
+ */
+export async function fetchChampionsAbilityBuilder(version) {
+  const payload = await fetchChampionPayload(version);
+  return Object.values(payload?.data ?? {}).map((champion) => ({
+    id: champion.id,
+    key: champion.key,
+    name: champion.name,
+    title: champion.title,
+    imageUrl: CDRAGON.centeredSplashUrl(champion.id),
+    tileUrl: CDRAGON.tileUrl(champion.key),
+    version,
+  }));
+}
+
+/**
+ * Fetches the detailed champion.json for one champion and normalizes the
+ * spells + passive into `{ q, w, e, r, passive }` where each ability is
+ * `{ name, description, iconUrl }`.
+ */
+export async function fetchChampionAbilities(version, championId) {
+  const response = await fetch(DDRAGON.championDetailUrl(version, championId));
+  if (!response.ok) {
+    throw new Error(`champion detail HTTP ${response.status}`);
+  }
+  const payload = await response.json();
+  const champion = payload?.data?.[championId];
+  if (!champion) throw new Error('champion detail missing');
+  const spells = champion.spells ?? [];
+  const mk = (spell) =>
+    spell
+      ? {
+          name: spell.name,
+          description: spell.description,
+          iconUrl: spell.image?.full
+            ? DDRAGON.spellIconUrl(version, spell.image.full)
+            : null,
+        }
+      : null;
+  return {
+    q: mk(spells[0]),
+    w: mk(spells[1]),
+    e: mk(spells[2]),
+    r: mk(spells[3]),
+    passive: champion.passive
+      ? {
+          name: champion.passive.name,
+          description: champion.passive.description,
+          iconUrl: champion.passive.image?.full
+            ? DDRAGON.passiveIconUrl(version, champion.passive.image.full)
+            : null,
+        }
+      : null,
+  };
+}
+
+/**
+ * Stat Builder mode champion list. Unlike the Higher/Lower modes which carry
+ * a single `.stat`, each entry here carries all 7 base stats so the game can
+ * both display the revealed value and compute its percentile in the roster.
+ * Also exposes `tileUrl` so the bouncing-roll animation can render circular
+ * tile icons without a second fetch.
+ */
+export async function fetchChampionsStatBuilder(version) {
+  const payload = await fetchChampionPayload(version);
+  return Object.values(payload?.data ?? {})
+    .map((champion) => ({
+      id: champion.id,
+      key: champion.key,
+      name: champion.name,
+      imageUrl: CDRAGON.centeredSplashUrl(champion.id),
+      tileUrl: CDRAGON.tileUrl(champion.key),
+      stats: {
+        hp: champion.stats?.hp,
+        mp: champion.stats?.mp,
+        ad: champion.stats?.attackdamage,
+        as: champion.stats?.attackspeed,
+        range: champion.stats?.attackrange,
+        armor: champion.stats?.armor,
+        mr: champion.stats?.spellblock,
+      },
+    }))
+    .filter((c) =>
+      [c.stats.hp, c.stats.mp, c.stats.ad, c.stats.as, c.stats.range, c.stats.armor, c.stats.mr]
+        .every((v) => Number.isFinite(v)),
+    );
+}
+
+/**
  * Pixel Reveal minigame champion list. No stat — just identity + splash URL.
  */
 export async function fetchChampionsForPixelReveal(version) {
@@ -191,5 +282,7 @@ export async function fetchChampionsForMode(mode) {
   if (mode === MODES.SKIN_COUNT) return fetchChampionsSkinCount(version);
   if (mode === MINIGAMES.PIXEL_REVEAL) return fetchChampionsForPixelReveal(version);
   if (mode === MINIGAMES.PIXEL_REVEAL_SKINS) return fetchChampionsForPixelRevealSkins(version);
+  if (mode === ROSTER_GAMES.STAT_BUILDER) return fetchChampionsStatBuilder(version);
+  if (mode === ROSTER_GAMES.ABILITY_BUILDER) return fetchChampionsAbilityBuilder(version);
   return fetchChampionsHP(version);
 }

@@ -8,6 +8,9 @@ export default function GameOver({
   isNewHighScore,
   onPlayAgain,
   onChangeMode,
+  scoreLabel = 'Your Streak',
+  highScoreLabel = 'All-Time High',
+  scoreSuffix = '',
 }) {
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true">
@@ -17,13 +20,17 @@ export default function GameOver({
 
         <div className={styles.scores}>
           <div className={styles.scoreBlock}>
-            <span className={styles.scoreLabel}>Your Streak</span>
-            <span className={styles.scoreValue}>{formatInteger(score)}</span>
+            <span className={styles.scoreLabel}>{scoreLabel}</span>
+            <span className={styles.scoreValue}>
+              {formatInteger(score)}{scoreSuffix}
+            </span>
           </div>
           <div className={styles.divider} aria-hidden />
           <div className={styles.scoreBlock}>
-            <span className={styles.scoreLabel}>All-Time High</span>
-            <span className={styles.scoreValue}>{formatInteger(highScore)}</span>
+            <span className={styles.scoreLabel}>{highScoreLabel}</span>
+            <span className={styles.scoreValue}>
+              {formatInteger(highScore)}{scoreSuffix}
+            </span>
           </div>
         </div>
 

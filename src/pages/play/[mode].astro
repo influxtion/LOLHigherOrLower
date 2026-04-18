@@ -2,7 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GameScreen from '../../components/GameScreen/GameScreen.jsx';
 import PixelRevealScreen from '../../components/PixelReveal/PixelRevealScreen.jsx';
-import { ALL_MODES, isMinigameId } from '../../utils/constants.js';
+import StatBuilderScreen from '../../components/StatBuilder/StatBuilderScreen.jsx';
+import AbilityBuilderScreen from '../../components/AbilityBuilder/AbilityBuilderScreen.jsx';
+import { ALL_MODES, isMinigameId, isRosterGameId, ROSTER_GAMES } from '../../utils/constants.js';
 
 export function getStaticPaths() {
   return ALL_MODES.map((entry) => ({
@@ -21,6 +23,7 @@ export function getStaticPaths() {
 
 const { modeId, title, description, heading, intro, label, slug } = Astro.props;
 const isMinigame = isMinigameId(modeId);
+const isRosterGame = isRosterGameId(modeId);
 
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
@@ -77,6 +80,12 @@ const breadcrumbJsonLd = {
   {
     isMinigame ? (
       <PixelRevealScreen client:only="react" mode={modeId} />
+    ) : isRosterGame ? (
+      modeId === ROSTER_GAMES.ABILITY_BUILDER ? (
+        <AbilityBuilderScreen client:only="react" mode={modeId} />
+      ) : (
+        <StatBuilderScreen client:only="react" mode={modeId} />
+      )
     ) : (
       <GameScreen client:only="react" mode={modeId} />
     )

@@ -15,6 +15,11 @@ export const MINIGAMES = {
   PIXEL_REVEAL_SKINS: 'pixelRevealSkins',
 };
 
+export const ROSTER_GAMES = {
+  STAT_BUILDER: 'statBuilder',
+  ABILITY_BUILDER: 'abilityBuilder',
+};
+
 export const MODE_LIST = [
   {
     id: MODES.HP,
@@ -103,10 +108,39 @@ export const MINIGAMES_LIST = [
   },
 ];
 
-/* Unified lookup: every playable entry (HoL modes + minigames) in one list.
-   Used by the Astro page router (`[mode].astro`) and by the sidebar to
-   resolve slug ↔ id without caring which group the entry belongs to. */
-export const ALL_MODES = [...MODE_LIST, ...MINIGAMES_LIST];
+export const ROSTER_GAMES_LIST = [
+  {
+    id: ROSTER_GAMES.STAT_BUILDER,
+    slug: 'stat-builder',
+    label: 'Stat Builder',
+    shortLabel: 'BUILD',
+    description: 'Blind pick one stat from each rolled champion.',
+    pageTitle: 'League of Legends Stat Builder | StatRift',
+    pageDescription:
+      'Blind pick stats from seven random LoL champions to build your own stat line. Scored by percentile across the full roster. Free browser game.',
+    pageHeading: 'Stat Builder',
+    pageIntro:
+      "Seven champions roll one by one. For each, claim one stat slot without seeing their numbers. The better you read a champion by name, the higher your score.",
+  },
+  {
+    id: ROSTER_GAMES.ABILITY_BUILDER,
+    slug: 'ability-builder',
+    label: 'Ability Builder',
+    shortLabel: 'ABILITY',
+    description: 'Blind pick one ability slot from each rolled champion.',
+    pageTitle: 'League of Legends Ability Builder | StatRift',
+    pageDescription:
+      'Blind pick abilities from six random LoL champions to build a custom kit. Claim a Q, W, E, R, passive, or model from each roll. Free theorycraft game.',
+    pageHeading: 'Ability Builder',
+    pageIntro:
+      "Six champions roll one by one. For each, claim one slot (Q, W, E, R, passive, or character model) without seeing their kit. No score, just the champion you built.",
+  },
+];
+
+/* Unified lookup: every playable entry (HoL modes + minigames + roster games)
+   in one list. Used by the Astro page router (`[mode].astro`) and by the
+   sidebar to resolve slug ↔ id without caring which group the entry belongs to. */
+export const ALL_MODES = [...MODE_LIST, ...MINIGAMES_LIST, ...ROSTER_GAMES_LIST];
 
 export const modeIdToSlug = (id) =>
   ALL_MODES.find((m) => m.id === id)?.slug ?? null;
@@ -122,16 +156,19 @@ export const pathForMode = (id) => {
 export const isMinigameId = (id) =>
   MINIGAMES_LIST.some((m) => m.id === id);
 
+export const isRosterGameId = (id) =>
+  ROSTER_GAMES_LIST.some((m) => m.id === id);
+
 /* Sidebar + menu grouping. Each group = a header with a tagline and the set
    of game ids that belong to it. Kept here so both the sidebar and the main
    menu stay in sync. */
 export const GAME_GROUPS = [
   {
-    id: 'higherLower',
-    label: 'Higher Or Lower?',
+    id: 'rosterGames',
+    label: 'Build your LoL Champion',
     tagline:
-      'League of Legends Higher or Lower — pick the LoL champion with the higher stat.',
-    entries: MODE_LIST,
+      'Draft and build with LoL champions across blind-pick games.',
+    entries: ROSTER_GAMES_LIST,
   },
   {
     id: 'pixelReveal',
@@ -140,12 +177,25 @@ export const GAME_GROUPS = [
       'A League of Legends pixel art guessing game. Identify the LoL champion through a veil of pixels.',
     entries: MINIGAMES_LIST,
   },
+  {
+    id: 'higherLower',
+    label: 'Higher Or Lower?',
+    tagline:
+      'League of Legends Higher or Lower. Pick the LoL champion with the higher stat.',
+    entries: MODE_LIST,
+  },
 ];
 
 export const DDRAGON = {
   versionsUrl: 'https://ddragon.leagueoflegends.com/api/versions.json',
   championDataUrl: (version) =>
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`,
+  championDetailUrl: (version, championId) =>
+    `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${championId}.json`,
+  spellIconUrl: (version, imageFull) =>
+    `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${imageFull}`,
+  passiveIconUrl: (version, imageFull) =>
+    `https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${imageFull}`,
   loadingArtUrl: (championId) =>
     `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championId}_0.jpg`,
 };
@@ -176,6 +226,7 @@ export const STORAGE_KEYS = {
   highScoreSkinCount: 'lolhl:highscore:skinCount',
   bestPixelReveal: 'lolhl:best:pixelReveal',
   bestPixelRevealSkins: 'lolhl:best:pixelRevealSkins',
+  bestStatBuilder: 'lolhl:best:statBuilder',
 };
 
 export const highScoreKeyFor = (mode) => {
@@ -184,6 +235,7 @@ export const highScoreKeyFor = (mode) => {
   if (mode === MODES.SKIN_COUNT) return STORAGE_KEYS.highScoreSkinCount;
   if (mode === MINIGAMES.PIXEL_REVEAL) return STORAGE_KEYS.bestPixelReveal;
   if (mode === MINIGAMES.PIXEL_REVEAL_SKINS) return STORAGE_KEYS.bestPixelRevealSkins;
+  if (mode === ROSTER_GAMES.STAT_BUILDER) return STORAGE_KEYS.bestStatBuilder;
   return STORAGE_KEYS.highScoreHp;
 };
 
