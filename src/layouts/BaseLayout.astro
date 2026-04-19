@@ -14,13 +14,24 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImageAbs = new URL(ogImage, Astro.site).toString();
 
 const isHome = Astro.url.pathname === '/';
+const siteUrl = Astro.site?.toString();
+const logoAbs = new URL('/web-app-manifest-512x512.png', Astro.site).toString();
 const websiteJsonLd = isHome
   ? {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'StatRift',
-      url: Astro.site?.toString(),
+      url: siteUrl,
       description,
+    }
+  : null;
+const organizationJsonLd = isHome
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'StatRift',
+      url: siteUrl,
+      logo: logoAbs,
     }
   : null;
 ---
@@ -32,7 +43,12 @@ const websiteJsonLd = isHome
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#07090f" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/web-app-manifest-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -65,6 +81,14 @@ const websiteJsonLd = isHome
         <script
           type="application/ld+json"
           set:html={JSON.stringify(websiteJsonLd)}
+        />
+      )
+    }
+    {
+      organizationJsonLd && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(organizationJsonLd)}
         />
       )
     }
