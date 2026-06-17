@@ -9,16 +9,30 @@ function isActive(modeId) {
 }
 ---
 
-<aside class={styles.sidebar} aria-label="Game navigation">
-  <a href="/" class={styles.brand} aria-label="Return to menu">
-    <span class={styles.brandMark}>S</span>
-    <span class={styles.brandText}>
-      <span class={styles.brandLine1}>Stat</span>
-      <span class={styles.brandLine2}>Rift</span>
-    </span>
-  </a>
+<aside class={styles.sidebar} aria-label="Game navigation" data-sidebar>
+  <div class={styles.bar}>
+    <a href="/" class={styles.brand} aria-label="Return to menu">
+      <span class={styles.brandMark}>S</span>
+      <span class={styles.brandText}>
+        <span class={styles.brandLine1}>Stat</span>
+        <span class={styles.brandLine2}>Rift</span>
+      </span>
+    </a>
+    <button
+      type="button"
+      class={styles.menuToggle}
+      aria-label="Toggle game menu"
+      aria-expanded="false"
+      aria-controls="sidebar-nav"
+      data-menu-toggle
+    >
+      <span class={styles.menuBar} aria-hidden="true"></span>
+      <span class={styles.menuBar} aria-hidden="true"></span>
+      <span class={styles.menuBar} aria-hidden="true"></span>
+    </button>
+  </div>
 
-  <nav class={styles.nav}>
+  <nav class={styles.nav} id="sidebar-nav">
     {
       GAME_GROUPS.map((group, i) => (
         <section
@@ -36,6 +50,7 @@ function isActive(modeId) {
                   class={`${styles.modeButton} ${
                     isActive(entry.id) ? styles.modeButtonActive : ''
                   }`}
+                  title={entry.label}
                   aria-current={isActive(entry.id) ? 'page' : undefined}
                 >
                   <span class={styles.modeBullet} aria-hidden="true" />
@@ -58,3 +73,30 @@ function isActive(modeId) {
     <span class={styles.footText}>Data: Riot Data Dragon</span>
   </div>
 </aside>
+
+<script>
+  // Mobile-only: the sidebar collapses to a top bar and the nav becomes a
+  // dropdown toggled by the hamburger. Toggling a data-attribute keeps the CSS
+  // (hashed module classes) in charge of all the actual show/hide styling.
+  const sidebar = document.querySelector('[data-sidebar]');
+  const toggle = document.querySelector('[data-menu-toggle]');
+  if (sidebar && toggle) {
+    const setOpen = (open) => {
+      sidebar.setAttribute('data-open', String(open));
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    setOpen(false);
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(sidebar.getAttribute('data-open') !== 'true');
+    });
+    document.addEventListener('click', (e) => {
+      if (sidebar.getAttribute('data-open') !== 'true') return;
+      if (sidebar.contains(e.target)) return;
+      setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+  }
+</script>

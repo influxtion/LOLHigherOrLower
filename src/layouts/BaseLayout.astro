@@ -108,6 +108,7 @@ const organizationJsonLd = isHome
     display: flex;
     flex: 1;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
   }
 
@@ -125,6 +126,12 @@ const organizationJsonLd = isHome
       flex-direction: column;
       height: auto;
       min-height: 100vh;
+      min-height: 100dvh;
+    }
+    /* The document scrolls on phones — don't trap scrolling inside .main,
+       which would otherwise create a nested, hard-to-reach scroll area. */
+    .main {
+      overflow-y: visible;
     }
   }
 </style>

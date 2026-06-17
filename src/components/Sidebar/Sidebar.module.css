@@ -1,14 +1,44 @@
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   width: var(--sidebar-width);
   height: 100vh;
+  height: 100dvh;
   padding: var(--space-5) var(--space-4);
   background: var(--color-bg-panel);
   border-right: 1px solid var(--color-border);
   gap: var(--space-6);
   overflow-y: auto;
+}
+
+/* Wrapper around the brand + hamburger. It only becomes a real flex row on
+   mobile; on tablet/desktop `display: contents` dissolves it so the brand
+   behaves as a direct child of the sidebar exactly as before. */
+.bar {
+  display: contents;
+}
+
+.menuToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-raised);
+}
+
+.menuBar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-text-dim);
 }
 
 .brand {
@@ -206,51 +236,66 @@
   }
 }
 
-/* Mobile — sidebar becomes a top bar with mode chips. */
+/* Mobile — sidebar collapses to a top bar; the hamburger opens the full nav as
+   a dropdown that overlays the page (so it never shoves the game down). With
+   eight modes across three groups, a horizontal chip row would overflow, so a
+   proper vertical menu is used instead. */
 @media (max-width: 599px) {
   .sidebar {
     width: 100%;
     height: auto;
-    flex-direction: row;
-    align-items: center;
-    padding: var(--space-3);
+    padding: var(--space-3) var(--space-4);
     border-right: 0;
     border-bottom: 1px solid var(--color-border);
+    gap: 0;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .menuToggle {
+    display: flex;
+  }
+
+  /* Nav is hidden until the hamburger sets data-open on the sidebar. */
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    flex-direction: column;
+    gap: var(--space-5);
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
+    padding: var(--space-4) var(--space-4) var(--space-5);
+    background: var(--color-bg-panel);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.85);
+  }
+  .sidebar[data-open='true'] .nav {
+    display: flex;
+  }
+
+  .group {
     gap: var(--space-3);
   }
-  .nav {
-    flex: 1;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--space-2);
-  }
-  .group {
-    flex-direction: row;
-    gap: var(--space-2);
+  .groupHead {
+    display: flex;
+    padding: 0 var(--space-2);
   }
   .groupDivider {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: 0;
-    border-left: 1px solid var(--color-border);
-    padding-left: var(--space-2);
-  }
-  .groupHead,
-  .foot {
-    display: none;
-  }
-  .modeList {
-    flex-direction: row;
-    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
   }
   .modeButton {
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-3);
   }
-  .modeDescription {
-    display: none;
-  }
-  .brandText {
+  .foot {
     display: none;
   }
 }

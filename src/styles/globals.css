@@ -1,6 +1,12 @@
 @import './tokens.css';
 @import './reset.css';
 
+html {
+  /* Stop iOS Safari/Chrome from inflating font sizes in landscape. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: var(--font-body);
   font-size: var(--fs-md);
@@ -9,12 +15,32 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #root {
   min-height: 100%;
   display: flex;
+}
+
+/* On tablet/desktop the app is a fixed-viewport shell: the sidebar is full
+   height and the main column scrolls internally, so lock the body to avoid a
+   second scrollbar. On phones the layout stacks vertically and the document
+   itself must scroll, so body overflow stays visible there. */
+@media (min-width: 600px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 599px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+  }
 }
 
 /* The background is a near-black field with a very subtle vertical fade so

@@ -18,11 +18,13 @@ export default function PixelCanvas({ championId, imageUrl, step }) {
   const canvasRef = useRef(null);
   const imgRef = useRef(null);
   const [ready, setReady] = useState(false);
-  const [triedFallback, setTriedFallback] = useState(false);
 
   useEffect(() => {
     setReady(false);
-    setTriedFallback(false);
+    // Track the fallback attempt in a local — React state was stale inside the
+    // onerror closure (the effect doesn't re-run on the change), so a fallback
+    // URL that also 404'd would re-trigger forever.
+    let triedFallback = false;
     const img = new Image();
     img.onload = () => {
       imgRef.current = img;
@@ -30,7 +32,7 @@ export default function PixelCanvas({ championId, imageUrl, step }) {
     };
     img.onerror = () => {
       if (triedFallback) return;
-      setTriedFallback(true);
+      triedFallback = true;
       img.src = DDRAGON.loadingArtUrl(championId);
     };
     img.src = imageUrl;
@@ -38,8 +40,6 @@ export default function PixelCanvas({ championId, imageUrl, step }) {
       img.onload = null;
       img.onerror = null;
     };
-    // triedFallback intentionally not in deps — only re-run when champion changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [championId, imageUrl]);
 
   useEffect(() => {

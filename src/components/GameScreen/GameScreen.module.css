@@ -5,6 +5,7 @@
   flex-direction: column;
   overflow: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Full-bleed split: two halves butted edge-to-edge, no gap. The VS seam and

@@ -49,7 +49,7 @@ src/
 │   ├── play/[mode].astro             Dynamic route (getStaticPaths) — mounts GameScreen or PixelRevealScreen as client:only
 │   └── 404.astro
 ├── components/
-│   ├── Sidebar/                      Sidebar.astro (static, no JS) — <a href> links, active highlight from Astro.url.pathname
+│   ├── Sidebar/                      Sidebar.astro — <a href> links, active highlight from Astro.url.pathname; tiny inline script toggles the mobile hamburger dropdown
 │   ├── ChampionCard/                 Loading-art portrait + name + stat (hidden / correct / incorrect states)
 │   ├── VersusDivider/                "VS" badge rendered between the two cards
 │   ├── ScoreDisplay/                 Current streak box with high score beneath
@@ -82,7 +82,7 @@ public/
 
 Astro ships zero JS by default. Components opt into hydration with a `client:*` directive.
 
-- **Sidebar** — static `.astro` file, no JS shipped. Highlighting is server-rendered from `Astro.url.pathname`.
+- **Sidebar** — static `.astro` file. Highlighting is server-rendered from `Astro.url.pathname`. The only JS is a tiny inline `<script>` that toggles a `data-open` attribute for the mobile hamburger dropdown (≤599px); no framework, no hydration. On tablet (600–959px) it's an icon rail; on phones it collapses to a top bar whose hamburger opens the full nav as an overlay.
 - **Menu hero & mode cards** — static HTML in `index.astro`. Mode cards are `<a href>` tags.
 - **ChampionOrbit** — `client:only="react"`. Uses canvas + `ResizeObserver` + rAF, so prerendering would crash on `window`.
 - **GameScreen / PixelRevealScreen** — `client:only="react"`. Both use `useLocalStorage` (reads `window.localStorage` synchronously in the initializer), so neither can prerender. A single `client:only` boundary per page keeps the hydration model simple.

@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
 }
 
@@ -215,7 +216,7 @@
 /* -------- Results overlay -------- */
 
 .resultsOverlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   display: flex;
   align-items: flex-start;
@@ -225,7 +226,7 @@
   backdrop-filter: blur(6px);
   overflow-y: auto;
   animation: fade-in var(--motion-med) var(--ease-out) both;
-  z-index: 10;
+  z-index: 100;
 }
 
 @keyframes fade-in {
